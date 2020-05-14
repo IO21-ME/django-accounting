@@ -17,7 +17,7 @@ from .utils import organization_manager
 from accounting.apps.people.models import Client, Employee
 from accounting.apps.people.forms import UserMultipleChoices
 
-from django_select2.fields import AutoModelSelect2Field
+from django_select2.forms import ModelSelect2Widget
 from datetimewidget.widgets import DateWidget
 
 
@@ -43,7 +43,7 @@ class SaleInlineLineFormSet(RequiredFirstInlineFormSet):
             f.restrict_to_organization(orga)
 
 
-class ClientForOrganizationChoices(AutoModelSelect2Field):
+class ClientForOrganizationChoices(ModelSelect2Widget):
     queryset = Client.objects.all()
     search_fields = (
         'name__icontains',
@@ -57,7 +57,7 @@ class ClientForOrganizationChoices(AutoModelSelect2Field):
         return params
 
 
-class EmployeeForOrganizationChoices(AutoModelSelect2Field):
+class EmployeeForOrganizationChoices(ModelSelect2Widget):
     queryset = Employee.objects.all()
     search_fields = (
         'first_name__icontains',

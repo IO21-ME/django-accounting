@@ -3,9 +3,9 @@ from django.contrib.auth import get_user_model
 
 from .models import Client, Employee
 
-from django_select2.fields import (
-    AutoModelSelect2Field,
-    AutoModelSelect2MultipleField)
+from django_select2.forms import (
+    ModelSelect2Widget,
+    ModelSelect2MultipleWidget)
 
 
 class ClientForm(ModelForm):
@@ -41,7 +41,7 @@ class EmployeeForm(ModelForm):
 User = get_user_model()
 
 
-class UserChoices(AutoModelSelect2Field):
+class UserChoices(ModelSelect2Widget):
     queryset = User.objects.all()
     search_fields = (
         'first_name__icontains',
@@ -51,7 +51,7 @@ class UserChoices(AutoModelSelect2Field):
     )
 
 
-class UserMultipleChoices(AutoModelSelect2MultipleField):
+class UserMultipleChoices(ModelSelect2MultipleWidget):
     queryset = User.objects.all()
     search_fields = (
         'first_name__icontains',
