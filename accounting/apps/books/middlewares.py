@@ -8,9 +8,9 @@ class AutoSelectOrganizationMiddleware(object):
 
     def __call__(self, request):
         return self.get_response(request)
-        
+
     def process_request(self, request):
-        if not request.user or not request.user.is_authenticated():
+        if not request.user or not request.user.is_authenticated:
             return
 
         orga = organization_manager.get_selected_organization(request)
