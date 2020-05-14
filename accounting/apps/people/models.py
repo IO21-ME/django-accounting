@@ -63,7 +63,8 @@ class Employee(models.Model):
     )
 
     organization = models.ForeignKey('books.Organization',
-                                     related_name="employees")
+                                     related_name="employees",
+                                     on_delete=models.CASCADE)
 
     class Meta:
         pass
