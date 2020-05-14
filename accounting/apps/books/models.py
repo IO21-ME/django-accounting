@@ -32,7 +32,9 @@ class Organization(models.Model):
                   "invoices and bills")
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
-                              related_name="owned_organizations")
+                              related_name="owned_organizations",
+                              on_delete=models.SET_NULL,
+                              null=True)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                      related_name="organizations",
                                      blank=True, null=True)
@@ -100,7 +102,8 @@ class TaxRate(models.Model):
     """
     organization = models.ForeignKey('books.Organization',
                                      related_name="tax_rates",
-                                     verbose_name="Attached to Organization")
+                                     verbose_name="Attached to Organization",
+                                     on_delete=models.CASCADE)
 
     name = models.CharField(max_length=50)
     rate = models.DecimalField(max_digits=6,
@@ -304,9 +307,12 @@ class AbstractSaleLine(models.Model):
 class Estimate(AbstractSale):
     organization = models.ForeignKey('books.Organization',
                                      related_name="estimates",
-                                     verbose_name="From Organization")
+                                     verbose_name="From Organization",
+                                     on_delete=models.CASCADE)
     client = models.ForeignKey('people.Client',
-                               verbose_name="To Client")
+                               verbose_name="To Client",
+                               on_delete=models.SET_NULL,
+                               null=True)
 
     objects = EstimateQuerySet.as_manager()
 
@@ -328,9 +334,12 @@ class Estimate(AbstractSale):
 
 
 class EstimateLine(AbstractSaleLine):
-    invoice = models.ForeignKey('books.Estimate',
-                                related_name="lines")
-    tax_rate = models.ForeignKey('books.TaxRate')
+    estimate = models.ForeignKey('books.Estimate',
+                                related_name="lines",
+                                on_delete=models.CASCADE)
+    tax_rate = models.ForeignKey('books.TaxRate',
+                                on_delete=models.SET_NULL,
+                                null=True)
 
     class Meta:
         pass
@@ -339,9 +348,12 @@ class EstimateLine(AbstractSaleLine):
 class Invoice(AbstractSale):
     organization = models.ForeignKey('books.Organization',
                                      related_name="invoices",
-                                     verbose_name="From Organization")
+                                     verbose_name="From Organization",
+                                     on_delete=models.CASCADE)
     client = models.ForeignKey('people.Client',
-                               verbose_name="To Client")
+                               verbose_name="To Client",
+                               on_delete=models.SET_NULL,
+                               null=True)
     payments = GenericRelation('books.Payment')
 
     objects = InvoiceQuerySet.as_manager()
@@ -365,8 +377,11 @@ class Invoice(AbstractSale):
 
 class InvoiceLine(AbstractSaleLine):
     invoice = models.ForeignKey('books.Invoice',
-                                related_name="lines")
-    tax_rate = models.ForeignKey('books.TaxRate')
+                                related_name="lines",
+                                on_delete=models.CASCADE)
+    tax_rate = models.ForeignKey('books.TaxRate',
+                                 on_delete=models.SET_NULL,
+                                 null=True)
 
     class Meta:
         pass
@@ -375,9 +390,12 @@ class InvoiceLine(AbstractSaleLine):
 class Bill(AbstractSale):
     organization = models.ForeignKey('books.Organization',
                                      related_name="bills",
-                                     verbose_name="To Organization")
+                                     verbose_name="To Organization",
+                                     on_delete=models.CASCADE)
     client = models.ForeignKey('people.Client',
-                               verbose_name="From Client")
+                               verbose_name="From Client",
+                               on_delete=models.SET_NULL,
+                               null=True)
     payments = GenericRelation('books.Payment')
 
     objects = BillQuerySet.as_manager()
@@ -401,8 +419,11 @@ class Bill(AbstractSale):
 
 class BillLine(AbstractSaleLine):
     bill = models.ForeignKey('books.Bill',
-                             related_name="lines")
-    tax_rate = models.ForeignKey('books.TaxRate')
+                             related_name="lines",
+                             on_delete=models.CASCADE)
+    tax_rate = models.ForeignKey('books.TaxRate',
+                                 on_delete=models.SET_NULL,
+                                 null=True)
 
     class Meta:
         pass
@@ -411,9 +432,12 @@ class BillLine(AbstractSaleLine):
 class ExpenseClaim(AbstractSale):
     organization = models.ForeignKey('books.Organization',
                                      related_name="expense_claims",
-                                     verbose_name="From Organization")
+                                     verbose_name="From Organization",
+                                     on_delete=models.CASCADE)
     employee = models.ForeignKey('people.Employee',
-                                 verbose_name="Paid by employee")
+                                 verbose_name="Paid by employee",
+                                 on_delete=models.SET_NULL,
+                                 null=True)
     payments = GenericRelation('books.Payment')
 
     objects = ExpenseClaimQuerySet.as_manager()
@@ -437,8 +461,11 @@ class ExpenseClaim(AbstractSale):
 
 class ExpenseClaimLine(AbstractSaleLine):
     expense_claim = models.ForeignKey('books.ExpenseClaim',
-                                      related_name="lines")
-    tax_rate = models.ForeignKey('books.TaxRate')
+                                      related_name="lines",
+                                      on_delete=models.CASCADE)
+    tax_rate = models.ForeignKey('books.TaxRate',
+                                 on_delete=models.SET_NULL,
+                                 null=True)
 
     class Meta:
         pass
@@ -457,7 +484,9 @@ class Payment(models.Model):
                                  null=True)
 
     # relationship to an object
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType,
+                                     on_delete=models.PROTECT)
+                                     # Should not deleted paid object.
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
