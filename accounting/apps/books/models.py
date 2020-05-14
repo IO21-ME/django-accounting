@@ -36,8 +36,7 @@ class Organization(models.Model):
                               on_delete=models.SET_NULL,
                               null=True)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                     related_name="organizations",
-                                     blank=True, null=True)
+                                     related_name="organizations")
 
     class Meta:
         pass
