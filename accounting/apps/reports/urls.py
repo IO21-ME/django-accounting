@@ -1,38 +1,38 @@
-from django.conf.urls import patterns, url
+from django.urls import path
 
 from . import views
 
-
-urlpatterns = patterns('',
+app_name = "reports"
+urlpatterns = [
 
     # Reports
-    url(r'^report/$',
+    path('report/',
         views.ReportListView.as_view(),
         name="report-list"),
-    url(r'^report/tax/$',
+    path('report/tax/',
         views.TaxReportView.as_view(),
         name="tax-report"),
-    url(r'^report/profitloss/$',
+    path('report/profitloss/',
         views.ProfitAndLossReportView.as_view(),
         name="profit-and-loss-report"),
-    url(r'^report/payrun/$',
+    path('report/payrun/',
         views.PayRunReportView.as_view(),
         name="pay-run-report"),
-    url(r'^report/invoicedetails/$',
+    path('report/invoicedetails/',
         views.InvoiceDetailsView.as_view(),
         name="invoice-details-report"),
 
     # Settings
-    url(r'^settings/$',
+    path('settings/',
         views.SettingsListView.as_view(),
         name="settings-list"),
-    url(r'^settings/business/$',
+    path('settings/business/',
         views.BusinessSettingsUpdateView.as_view(),
         name="settings-business"),
-    url(r'^settings/financial/$',
+    path('settings/financial/',
         views.FinancialSettingsUpdateView.as_view(),
         name="settings-financial"),
-    url(r'^settings/payrun/$',
+    path('settings/payrun/',
         views.PayRunSettingsUpdateView.as_view(),
         name="settings-payrun"),
-)
+]

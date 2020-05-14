@@ -1,7 +1,7 @@
 from django.db.models.fields import FieldDoesNotExist
 from django.views import generic
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .utils import organization_manager
 
